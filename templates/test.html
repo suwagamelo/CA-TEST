@@ -85,3 +85,53 @@
   height: 4px; background: var(--border);
   border-radius: 100px; overflow: hidden;
 }
+.progress-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 100px;
+  transition: width 0.3s;
+}
+.progress-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem; color: var(--muted);
+  text-align: right; margin-bottom: 0.3rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="test-header">
+  <h1>Computer Science Quiz</h1>
+  <p>Answer all {{ questions|length }} questions and submit when ready.</p>
+</div>
+
+<form method="POST" action="/test" id="quizForm">
+  <div class="name-section">
+    <label for="student_name">Your Name</label>
+    <input type="text" id="student_name" name="student_name" placeholder="Enter your full name" required />
+  </div>
+
+  <div class="progress-bar-wrap">
+ <div class="progress-label"><span id="answered">0</span>/{{ questions|length }} answered</div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  {% for q in questions %}
+  <div class="question-card" id="card-{{ q.question_id }}">
+    <div class="q-meta">
+      <span class="q-num">Q{{ q.question_id }}</span>
+      <span class="q-topic">{{ q.topic }}</span>
+    </div>
+    <div class="q-text">{{ q.text }}</div>
+    <div class="options">
+      {% for key, value in q.options.items() %}
+      <label class="option-label">
+        <input type="radio" name="q{{ q.question_id }}" value="{{ key }}" onchange="updateProgress()" />
+        <span class="option-key">{{ key }}</span>
+        <span>{{ value }}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
