@@ -45,7 +45,7 @@ That's it! No database or extra setup needed.
 
 ```
 cbt_app/
-├── app.py          # Flask routes (home, test, result, history)
+├── app.py          # Flask routes (home, base, test, result, history)
 ├── models.py       # OOP classes: Question, TestResult + question bank
 ├── templates/
 │   ├── base.html   # Shared layout
