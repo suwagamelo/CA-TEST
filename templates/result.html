@@ -42,3 +42,83 @@
   display: inline-block;
   margin-bottom: 1rem;
 }
+.grade-A { color: var(--correct); background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.4); }
+.grade-B { color: var(--accent2); background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.4); }
+.grade-C { color: var(--accent3); background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.4); }
+.grade-D, .grade-F { color: var(--wrong); background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.4); }
+.breakdown-title {
+  font-size: 1rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted);
+  margin: 2rem 0 1rem;
+}
+.q-result {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-left: 4px solid var(--border);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.q-result.correct { border-left-color: var(--correct); }
+.q-result.wrong { border-left-color: var(--wrong); }
+.qr-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
+.qr-icon { font-size: 1rem; }
+.qr-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem; color: var(--muted);
+}
+.qr-topic {
+  font-size: 0.75rem; color: var(--muted);
+  background: var(--bg); padding: 0.15rem 0.5rem;
+  border-radius: 100px; border: 1px solid var(--border);
+}
+.qr-text { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.6rem; }
+.qr-answers {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+}
+.your-ans { color: var(--muted); }
+.your-ans span { color: var(--wrong); }
+.correct-ans span { color: var(--correct); }
+.correct .your-ans span { color: var(--correct); }
+.action-row {
+  display: flex; gap: 1rem; justify-content: center;
+  margin-top: 2.5rem; flex-wrap: wrap;
+}
+{% endblock %}
+{% block content %}
+<div class="result-hero">
+  <h1>{{ result.student_name }}'s Result</h1>
+  <div class="timestamp">📅 Submitted {{ result.get_formatted_timestamp() }}</div>
+
+  <div class="score-circle" style="--pct: {{ result.get_percentage() }}">
+    <div class="score-inner">
+      <div class="score-num">{{ result.score }}</div>
+      <div class="score-denom">out of {{ result.total }}</div>
+    </div>
+  </div>
+
+  <div class="grade-display grade-{{ result.get_grade() }}">
+    Grade {{ result.get_grade() }} &nbsp;·&nbsp; {{ result.get_percentage() }}%
+  </div>
+</div>
+
+<div class="breakdown-title">Question Breakdown</div>
+
+{% for d in result.details %}
+<div class="q-result {{ 'correct' if d.is_correct else 'wrong' }}">
+  <div class="qr-header">
+    <span class="qr-icon">{{ "✅" if d.is_correct else "❌" }}</span>
+    <span class="qr-num">Q{{ loop.index }}</span>
+    <span class="qr-topic">{{ d.topic }}</span>
+  </div>
+  <div class="qr-text">{{ d.question }}</div>
+  <div class="qr-answers">
+    <div class="your-ans">Your answer: <span>{{ d.user_answer if d.user_answer else "—" }}{% if d.user_answer %} — {{ d.options[d.user_answer] }}{% endif %}</span></div>
+    {% if not d.is_correct %}
+    <div class="correct-ans">Correct: <span>{{ d.correct_answer }} — {{ d.options[d.correct_answer] }}</span></div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
