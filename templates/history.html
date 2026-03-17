@@ -34,3 +34,38 @@
   color: var(--muted); font-size: 0.95rem;
 }
 {% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Test History</h1>
+  <p>All submitted tests, most recent first (stack view).</p>
+</div>
+
+{% if results %}
+<div class="card" style="padding: 0; overflow: hidden;">
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Student</th>
+        <th>Score</th>
+        <th>Grade</th>
+        <th>Submitted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in results %}
+      <tr>
+        <td class="ts">{{ loop.index }}</td>
+        <td><strong>{{ r.student_name }}</strong></td>
+        <td>{{ r.score }}/{{ r.total }} <span style="color:var(--muted); font-size:0.85rem;">({{ r.get_percentage() }}%)</span></td>
+        <td><span class="grade-chip grade-{{ r.get_grade() }}">{{ r.get_grade() }}</span></td>
+        <td class="ts">{{ r.get_formatted_timestamp() }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card empty-state">No test history yet. <a href="/test" style="color:var(--accent);">Take the first test!</a></div>
+{% endif %}
